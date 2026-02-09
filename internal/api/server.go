@@ -24,6 +24,7 @@ import (
 	"github.com/router-for-me/CLIProxyAPI/v6/internal/api/middleware"
 	"github.com/router-for-me/CLIProxyAPI/v6/internal/api/modules"
 	ampmodule "github.com/router-for-me/CLIProxyAPI/v6/internal/api/modules/amp"
+	augplusmodule "github.com/router-for-me/CLIProxyAPI/v6/internal/api/modules/augplus"
 	"github.com/router-for-me/CLIProxyAPI/v6/internal/config"
 	"github.com/router-for-me/CLIProxyAPI/v6/internal/logging"
 	"github.com/router-for-me/CLIProxyAPI/v6/internal/managementasset"
@@ -277,6 +278,12 @@ func NewServer(cfg *config.Config, authManager *auth.Manager, accessManager *sdk
 	}
 	if err := modules.RegisterModule(ctx, s.ampModule); err != nil {
 		log.Errorf("Failed to register Amp module: %v", err)
+	}
+
+	// Register AugPlus compatible module for VS Code extension support
+	augplusModule := augplusmodule.New()
+	if err := modules.RegisterModule(ctx, augplusModule); err != nil {
+		log.Errorf("Failed to register AugPlus module: %v", err)
 	}
 
 	// Apply additional router configurators from options
